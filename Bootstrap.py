@@ -36,3 +36,41 @@ boot_df = pd.DataFrame({"x": boot_stat})
  ggplot(boot_df, aes(x = "x")) +
  geom_histogram(color = "#154734", fill = "#FFB81C")
  )
+
+#%%
+
+class BootCI:
+    def __init__(self):
+        """Initializes the class"""
+        self._stat = "mean"
+        self._dat = None
+        self._n_boot = 0
+        self._boot_stat = None
+        self._ci_level = 0.95
+        
+    
+        
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
