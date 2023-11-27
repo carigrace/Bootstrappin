@@ -76,12 +76,14 @@ test1.clear_list()
 
 test2 = BootCI(dat, "median")
 test2.run_sims(10000)
-test2.run_sims(10000)
+test2.run_sims(5000)
 test2.clear_list()
 
 test3 = BootCI(dat, "std dev")
 test3.run_sims(10000)
-test3.clear_list()   
+test3.clear_list()
+
+
         
 
 
