@@ -40,15 +40,45 @@ boot_df = pd.DataFrame({"x": boot_stat})
 #%%
 
 class BootCI:
-    def __init__(self):
+    def __init__(self, data = None, stat = "mean"):
         """Initializes the class"""
-        self._stat = "mean"
-        self._dat = None
-        self._n_boot = 0
-        self._boot_stat = None
+        self._stat = stat
+        self._dat = data
+        self._boot_stat = []
         self._ci_level = 0.95
         
-    
+    def run_sims(self, n):
+        """Runs bootstrap simulations"""
+        for i in range(n):
+            boot_sample = self._dat.sample(len(self._dat), replace = True)
+            
+            if self._stat == "median":
+                self._boot_stat.append(float(boot_sample.median()))
+            elif self._stat == "mean":
+                self._boot_stat.append(float(boot_sample.mean()))
+            elif self._stat == "std dev":
+                self._boot_stat.append(float(boot_sample.std())) 
+            else:
+                raise TypeError("Invalid statistic name")
+                
+    def clear_list(self):
+        """Resets the boot_stat list"""
+        self._boot_stat = []
+        
+#%%
+
+dat = pd.read_csv("2017_Fuel_Economy_Data.csv")
+dat = dat["Combined Mileage (mpg)"]
+
+test1 = BootCI(dat)  
+test1.run_sims(10000)   
+test1.clear_list()  
+
+test2 = BootCI(dat, "median")
+test2.run_sims(10000)
+test2.run_sims(10000)
+test2.clear_list()
+   
         
 
 
