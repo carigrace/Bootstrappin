@@ -32,7 +32,7 @@ for i in range(n_boot):
       
 boot_df = pd.DataFrame({"x": boot_stat})
     
-+(
+(
  ggplot(boot_df, aes(x = "x")) +
  geom_histogram(color = "#154734", fill = "#FFB81C")
  )
