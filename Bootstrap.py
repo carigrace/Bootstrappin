@@ -6,6 +6,7 @@ Created on Wed Oct 18 15:03:07 2023
 
 from plotnine import *
 import pandas as pd
+import numpy as np
 import os
 
 os.chdir("C:/Users/Ryan/OneDrive/Desktop/STA 2450")
@@ -65,14 +66,54 @@ class BootCI:
         """Resets the boot_stat list"""
         self._boot_stat = []
         
+    def change_stat(self, stat):
+        """Changes the bootstrap statistic"""
+        self._stat = stat
+        self.clear_list()
+        
+    def plot_bootstrap(self):
+        """Plots a graph of the bootstrap distribution"""
+        
+        boot_df = pd.DataFrame({"x": self._boot_stat})
+        
+        p = (
+         ggplot(boot_df, aes(x = "x")) +
+         geom_histogram(color = "#154734", fill = "#FFB81C")
+         )
+        
+        return p
+    
+    def find_percentiles(self, conf_level = 0.95):
+        """Finds desired confidence interval for the bootstrap"""
+        ll = (1-conf_level)/2
+        ul = (1+conf_level)/2
+        if self._boot_stat == []:
+            print("You have an empty list, please run a bootstrap.")
+        else:
+            n = np.percentile(self._boot_stat, [ll, ul])
+            print(f"We are {conf_level*100} percent confident that the true \
+{self._stat} is between {n[0]} and {n[1]}.")
+            return n
+        
 #%%
+
+
+## Add Error Testing
+
 
 dat = pd.read_csv("2017_Fuel_Economy_Data.csv")
 dat = dat["Combined Mileage (mpg)"]
 
 test1 = BootCI(dat)  
-test1.run_sims(10000)   
-test1.clear_list()  
+test1.run_sims(10000)  
+test1.change_stat("std dev")
+test1.run_sims(10000)
+test1.plot_bootstrap()
+test1.find_percentiles(0.98)
+ci = test1.find_percentiles()
+test1.clear_list()
+test1.find_percentiles()
+
 
 test2 = BootCI(dat, "median")
 test2.run_sims(10000)
