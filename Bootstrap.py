@@ -39,17 +39,60 @@ boot_df = pd.DataFrame({"x": boot_stat})
  )
 
 #%%
+from plotnine import *
+import pandas as pd
+import numpy as np
+import os
+
 
 class BootCI:
     def __init__(self, data = None, stat = "mean"):
-        """Initializes the class"""
+        """
+        Initializes the class BootCI
+
+        Parameters
+        ----------
+        data : TYPE: Pandas data series that is required if you want to run
+        simulations.
+            DESCRIPTION. The default is None, but data is required if you want
+            to run simulations.
+            
+        stat : TYPE: optional string  Options are "mean", "median", and "std dev"
+            DESCRIPTION. The default is "mean".
+
+        Returns
+        -------
+        None.
+
+        """
         self._stat = stat
         self._dat = data
         self._boot_stat = []
         self._ci_level = 0.95
         
     def run_sims(self, n):
-        """Runs bootstrap simulations"""
+        """
+        Runs the desired number of bootstrap simulations.
+
+        Parameters
+        ----------
+        n : TYPE: Positive integer
+            DESCRIPTION. : Number of bootstrap resampling simulations that will
+            be ran
+
+        Raises
+        ------
+        TypeError
+            DESCRIPTION. : Error that will be raised if self._stat is not one
+            of the three valid options, which are "mean", "median", and 
+            "std dev"
+            
+
+        Returns
+        -------
+        None.
+
+        """
         for i in range(n):
             boot_sample = self._dat.sample(len(self._dat), replace = True)
             
@@ -67,12 +110,26 @@ class BootCI:
         self._boot_stat = []
         
     def change_stat(self, stat):
-        """Changes the bootstrap statistic"""
+        """
+        Changes the bootstrap statistic.
+
+        Parameters
+        ----------
+        stat : TYPE: string.
+                Options are "mean", "median", and "std dev" only
+            DESCRIPTION. The type of bootstrap statistic
+
+        Returns
+        -------
+        None.
+
+        """
         self._stat = stat
         self.clear_list()
         
     def plot_bootstrap(self):
-        """Plots a graph of the bootstrap distribution"""
+        """Plots a graph of the bootstrap distribution. If no simulations have
+        been run, the plot will be empty."""
         
         boot_df = pd.DataFrame({"x": self._boot_stat})
         
@@ -84,7 +141,20 @@ class BootCI:
         return p
     
     def find_percentiles(self, conf_level = 0.95):
-        """Finds desired confidence interval for the bootstrap"""
+        """
+        Finds the confidence interval at the given level.
+
+        Parameters
+        ----------
+        conf_level : Float between 0 and 1, exclusive
+            DESCRIPTION. The confidence level to be evaluated. The default is 
+            0.95.
+
+        Returns
+        -------
+        Returns the confidence limits in a list
+
+        """
         ll = (1-conf_level)/2
         ul = (1+conf_level)/2
         if self._boot_stat == []:
@@ -97,9 +167,7 @@ class BootCI:
         
 #%%
 
-
-## Add Error Testing
-
+## Using the class
 
 dat = pd.read_csv("2017_Fuel_Economy_Data.csv")
 dat = dat["Combined Mileage (mpg)"]
